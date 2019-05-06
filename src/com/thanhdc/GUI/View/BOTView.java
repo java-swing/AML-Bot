@@ -5,7 +5,6 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.github.lgooddatepicker.components.TimePickerSettings.TimeArea;
-import com.thanhdc.GUI.Model.Establish;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class BOTView extends JFrame {
-
-    private Establish establish;
 
     JTextArea textArea;
     JButton save;
@@ -158,16 +155,16 @@ public class BOTView extends JFrame {
         JLabel saveFolder = createLabel("Folder lưu trữ: ");
 
         DatePicker jdStartDate = generateDatePicker();
-        LocalDate DateStart = asLocalDate(jdStartDate);
+
 
         DatePicker jdEndDate = generateDatePicker();
-        LocalDate DateEnd = asLocalDate(jdEndDate);
+
 
         TimePicker jdTimeStart = generateTimePicker();
-        timePickerStart = toSqlTime(jdTimeStart);
+
 
         TimePicker jdTimeEnd = generateTimePicker();
-        timePickerEnd = toSqlTime(jdTimeEnd);
+
 
         JTextArea textintervalPeriod = createTextArea(1, 1);
 
@@ -177,8 +174,17 @@ public class BOTView extends JFrame {
         JButton btStart = createButton("START");
         btStart.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // textintervalPeriod.append(selectedDateStart);
-                // String textInterval = textintervalPeriod.getText();
+                LocalDate DateStart = asLocalDate(jdStartDate);
+                LocalDate DateEnd = asLocalDate(jdEndDate);
+                timePickerStart = toSqlTime(jdTimeStart);
+                timePickerEnd = toSqlTime(jdTimeEnd);
+                int intervalPeriod = Integer.parseInt(textintervalPeriod.getText());
+                System.out.println(DateStart);
+                System.out.println(DateEnd);
+                System.out.println(timePickerStart);
+                System.out.println(timePickerEnd);
+                System.out.println(intervalPeriod);
+
             }
         });
 
@@ -350,6 +356,7 @@ public class BOTView extends JFrame {
     protected void StartBt() {
 
     }
+
     private JPanel createPanelMonitor() {
         JPanel panel = new JPanel();
 
