@@ -20,6 +20,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BOTView extends JFrame {
 
@@ -184,6 +186,28 @@ public class BOTView extends JFrame {
                 System.out.println(timePickerStart);
                 System.out.println(timePickerEnd);
                 System.out.println(intervalPeriod);
+
+                LocalDate actualDate = java.time.LocalDate.now();
+
+                LocalTime actualTime = java.time.LocalTime.now();
+
+                while (actualDate == DateStart) {
+                    while (actualTime.equals(timePickerStart)) {
+                        // creating timer task, timer
+                        TimerTask tasknew = new TimerSchedulePeriod();
+                        Timer timer = new Timer();
+
+                        // scheduling the task at interval
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                System.out.println("Tell me what can i do?");
+                            }
+                        }, 1);
+                    }
+
+                }
+
 
             }
         });
@@ -453,7 +477,7 @@ public class BOTView extends JFrame {
 
     public static Date asDate(DatePicker datePicker) {
         LocalDate selectedDate = datePicker.getDate();
-        Date date = new Date(selectedDate.atStartOfDay(ZoneId.of("UTC+00:00"))
+        Date date = new Date(selectedDate.atStartOfDay(ZoneId.of("UTC+07:00"))
                 .toEpochSecond() * 1000);
         return date;
     }
@@ -463,8 +487,10 @@ public class BOTView extends JFrame {
         return selectedDate;
     }
 
+
     public static java.sql.Time toSqlTime(TimePicker timePicker) {
         LocalTime LcTimeStart = timePicker.getTime();
         return java.sql.Time.valueOf(LcTimeStart);
     }
+
 }
