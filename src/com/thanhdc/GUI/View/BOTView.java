@@ -1,30 +1,31 @@
 package com.thanhdc.GUI.View;
 
+import Main.EndTask;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.github.lgooddatepicker.components.TimePickerSettings.TimeArea;
+import com.thanhdc.GUI.Main.YourTask;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.prefs.Preferences;
 
 public class BOTView extends JFrame {
-
     JTextArea textArea;
     JButton save;
     JButton Start;
@@ -56,9 +57,16 @@ public class BOTView extends JFrame {
 
     private JTabbedPane createTabbedPane() {
         JTabbedPane tablePane = new JTabbedPane();
+        tablePane.setBackground(Color.lightGray);
+
         JPanel panelEstablish = createPanelEstablish();
+        panelEstablish.setBackground(Color.lightGray);
+
         JPanel panelResult = createPanelResult();
+        panelResult.setBackground(Color.lightGray);
+
         JPanel panelMonitor = createPanelMonitor();
+        panelMonitor.setBackground(Color.lightGray);
 
         tablePane
                 .addTab("Monitor", null, panelMonitor, "click to show panel 1");
@@ -158,15 +166,11 @@ public class BOTView extends JFrame {
 
         DatePicker jdStartDate = generateDatePicker();
 
-
         DatePicker jdEndDate = generateDatePicker();
-
 
         TimePicker jdTimeStart = generateTimePicker();
 
-
         TimePicker jdTimeEnd = generateTimePicker();
-
 
         JTextArea textintervalPeriod = createTextArea(1, 1);
 
@@ -176,38 +180,61 @@ public class BOTView extends JFrame {
         JButton btStart = createButton("START");
         btStart.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                Calendar calStart = null;
+                Calendar calEnd = null;
                 LocalDate DateStart = asLocalDate(jdStartDate);
-                LocalDate DateEnd = asLocalDate(jdEndDate);
+                // disengage element of TimeStart
                 timePickerStart = toSqlTime(jdTimeStart);
+                int timePickerStartHour = timePickerStart.getHours();
+                int timePickerStartMin = timePickerStart.getMinutes();
+                int timePickerStartSecond = timePickerStart.getSeconds();
+                // format DateStart to Calendar type
+                Date DateNoZoneStart = convertToDateViaSqlDate(DateStart);
+                calStart = Calendar.getInstance();
+                calStart.setTime(DateNoZoneStart);
+
+                calStart.set(Calendar.HOUR_OF_DAY, timePickerStartHour);// import
+                // time
+                calStart.set(Calendar.MINUTE, timePickerStartMin);
+                calStart.set(Calendar.SECOND, timePickerStartSecond);
+                // converse text of intervalPeriod to interger
+                int intPeriod = Integer.parseInt(textintervalPeriod.getText());
+
+                // timer.schedule(Task, Time to start, Interval Period);
+                Timer timerToStart = new Timer();
+                timerToStart.schedule(new YourTask(), calStart.getTime(),
+                        TimeUnit.MILLISECONDS
+                                .convert(intPeriod, TimeUnit.SECONDS)); // period:
+                // 1
+                // hour
+
+                LocalDate DateEnd = asLocalDate(jdEndDate);
+                // disengage element of TimeEnd
                 timePickerEnd = toSqlTime(jdTimeEnd);
-                int intervalPeriod = Integer.parseInt(textintervalPeriod.getText());
-                System.out.println(DateStart);
-                System.out.println(DateEnd);
-                System.out.println(timePickerStart);
-                System.out.println(timePickerEnd);
-                System.out.println(intervalPeriod);
-
-                LocalDate actualDate = java.time.LocalDate.now();
-
-                LocalTime actualTime = java.time.LocalTime.now();
-
-                while (actualDate == DateStart) {
-                    while (actualTime.equals(timePickerStart)) {
-                        // creating timer task, timer
-                        TimerTask tasknew = new TimerSchedulePeriod();
-                        Timer timer = new Timer();
-
-                        // scheduling the task at interval
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                System.out.println("Tell me what can i do?");
-                            }
-                        }, 1);
-                    }
-
-                }
-
+                int timePickerEndHour = timePickerStart.getHours();
+                int timePickerEndtMin = timePickerStart.getMinutes();
+                int timePickerEndSecond = timePickerStart.getSeconds();
+                // format DateEnd to Calendar type
+//				Date DateNoZoneEnd = convertToDateViaSqlDate(DateEnd);
+//				calEnd = Calendar.getInstance();
+//				calEnd.setTime(DateNoZoneStart);
+//
+//				calEnd.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
+//																	// time
+//				calEnd.set(Calendar.MINUTE, timePickerEndtMin);
+//				calEnd.set(Calendar.SECOND, timePickerEndSecond);
+//
+//				Timer timerToEnd = new Timer();
+//				timerToEnd.schedule(new EndTask(), calEnd.getTime(),
+//						TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
+//
+//				String mapSaveFolder = saveFolder.getText();
+//
+//				System.out.println(timePickerStartHour);
+//				System.out.println(timePickerStartMin);
+//				System.out.println(timePickerStartSecond);
+//				System.out.println(intPeriod);
+//				System.out.println(mapSaveFolder);
 
             }
         });
@@ -373,11 +400,27 @@ public class BOTView extends JFrame {
     }
 
     protected void StopBt() {
-        // TODO Auto-generated method stub
+        Calendar calStop = null;
+        LocalDate dateStop = LocalDate.now();
+        Date DateNoZoneStop = convertToDateViaSqlDate(dateStop);
+        calStop = Calendar.getInstance();
+        calStop.setTime(DateNoZoneStop);
+        TimePicker timePickerStop = new TimePicker();
+        java.sql.Time timeStop = toSqlTime(timePickerStop);
 
-    }
+        int timePickerEndHour = timePickerStart.getHours();
+        int timePickerEndtMin = timePickerStart.getMinutes();
+        int timePickerEndSecond = timePickerStart.getSeconds();
+        // format DateEnd to Calendar type
 
-    protected void StartBt() {
+        calStop.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
+        // time
+        calStop.set(Calendar.MINUTE, timePickerEndtMin);
+        calStop.set(Calendar.SECOND, timePickerEndSecond);
+
+        Timer timerToEnd = new Timer();
+        timerToEnd.schedule(new EndTask(), calStop.getTime(),
+                TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
 
     }
 
@@ -455,29 +498,33 @@ public class BOTView extends JFrame {
     }
 
     protected void saveToFile() {
-        JFileChooser fileChooser = new JFileChooser();
-        int retval = fileChooser.showSaveDialog(save);
-        if (retval == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            if (file == null) {
-                return;
-            }
-            if (!file.getName().toLowerCase().endsWith(".txt")) {
-                file = new File(file.getParentFile(), file.getName() + ".txt");
-            }
-            try {
-                textArea.write(new OutputStreamWriter(
-                        new FileOutputStream(file), "utf-8"));
-                Desktop.getDesktop().open(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        Preferences pref = Preferences.userRoot();
+
+        // Retrieve the selected path or use
+        // an empty string if no path has
+        // previously been selected
+        String path = pref.get("DEFAULT_PATH", "");
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        // Set the path that was saved in preferences
+        chooser.setCurrentDirectory(new File(path));
+
+        int returnVal = chooser.showOpenDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File f = chooser.getSelectedFile();
+            chooser.setCurrentDirectory(f);
+
+            // Save the selected path
+            pref.put("DEFAULT_PATH", f.getAbsolutePath());
         }
     }
 
     public static Date asDate(DatePicker datePicker) {
         LocalDate selectedDate = datePicker.getDate();
-        Date date = new Date(selectedDate.atStartOfDay(ZoneId.of("UTC+07:00"))
+        Date date = new Date(selectedDate.atStartOfDay(ZoneId.of("UTC+00:00"))
                 .toEpochSecond() * 1000);
         return date;
     }
@@ -487,10 +534,17 @@ public class BOTView extends JFrame {
         return selectedDate;
     }
 
-
     public static java.sql.Time toSqlTime(TimePicker timePicker) {
         LocalTime LcTimeStart = timePicker.getTime();
         return java.sql.Time.valueOf(LcTimeStart);
     }
 
+    // public static java.sql.Time toSqlTimeFromLCTime(LocalTime LocalTime) {
+    // LocalTime LcTimeStart = timePicker.getTime();
+    // return java.sql.Time.valueOf(LcTimeStart);
+    // }
+
+    public Date convertToDateViaSqlDate(LocalDate dateToConvert) {
+        return java.sql.Date.valueOf(dateToConvert);
+    }
 }
