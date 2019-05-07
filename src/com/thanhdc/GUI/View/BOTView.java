@@ -162,6 +162,8 @@ public class BOTView extends JFrame {
         JLabel endTime = createLabel("Giờ kết thúc: ");
 
         JLabel intervalPeriod = createLabel("Interval (Period): ");
+        JLabel intervalUnitTime = createLabel("h");
+
         JLabel saveFolder = createLabel("Folder lưu trữ: ");
 
         DatePicker jdStartDate = generateDatePicker();
@@ -215,26 +217,26 @@ public class BOTView extends JFrame {
                 int timePickerEndtMin = timePickerStart.getMinutes();
                 int timePickerEndSecond = timePickerStart.getSeconds();
                 // format DateEnd to Calendar type
-//				Date DateNoZoneEnd = convertToDateViaSqlDate(DateEnd);
-//				calEnd = Calendar.getInstance();
-//				calEnd.setTime(DateNoZoneStart);
-//
-//				calEnd.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
-//																	// time
-//				calEnd.set(Calendar.MINUTE, timePickerEndtMin);
-//				calEnd.set(Calendar.SECOND, timePickerEndSecond);
-//
-//				Timer timerToEnd = new Timer();
-//				timerToEnd.schedule(new EndTask(), calEnd.getTime(),
-//						TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
-//
-//				String mapSaveFolder = saveFolder.getText();
-//
-//				System.out.println(timePickerStartHour);
-//				System.out.println(timePickerStartMin);
-//				System.out.println(timePickerStartSecond);
-//				System.out.println(intPeriod);
-//				System.out.println(mapSaveFolder);
+				Date DateNoZoneEnd = convertToDateViaSqlDate(DateEnd);
+				calEnd = Calendar.getInstance();
+				calEnd.setTime(DateNoZoneStart);
+
+				calEnd.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
+																	// time
+				calEnd.set(Calendar.MINUTE, timePickerEndtMin);
+				calEnd.set(Calendar.SECOND, timePickerEndSecond);
+
+				Timer timerToEnd = new Timer();
+				timerToEnd.schedule(new EndTask(), calEnd.getTime(),
+						TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
+
+				String mapSaveFolder = saveFolder.getText();
+
+				System.out.println(timePickerStartHour);
+				System.out.println(timePickerStartMin);
+				System.out.println(timePickerStartSecond);
+				System.out.println(intPeriod);
+				System.out.println(mapSaveFolder);
 
             }
         });
@@ -351,6 +353,17 @@ public class BOTView extends JFrame {
         c.weightx = 0.0;
         c.insets = new Insets(10, 0, 0, 0);
         pl.add(textintervalPeriod, c);
+
+        //intervalUnitTime
+        c.gridx = 3;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        c.ipady = 0;
+        c.ipadx = 0;
+        c.weightx = 0.0;
+        c.insets = new Insets(10, 10, 0, 0);
+        pl.add(intervalUnitTime, c);
+
 
         // Textarea intervalPeriod
         c.fill = GridBagConstraints.HORIZONTAL;

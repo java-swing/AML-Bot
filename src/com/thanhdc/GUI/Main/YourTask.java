@@ -21,7 +21,7 @@ public class YourTask extends TimerTask {
 
         try {
             //D:\\LoiPD\\Projects\\BOT\\BotAML\\chromedriver.exe
-            System.setProperty("webdriver.chrome.driver", "/home/thanhdinh/IdeaProjects/JavaSwing/BOT-AML/chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "/home/thanhdinh/IdeaProjects/JavaSwing/BOT-AML/chromedriver");
             driver = new ChromeDriver();
             driver.manage().window().maximize();
 
