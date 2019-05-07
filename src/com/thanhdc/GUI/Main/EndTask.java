@@ -1,4 +1,4 @@
-package Main;
+package com.thanhdc.GUI.Main;
 
 import java.util.Timer;
 import java.util.TimerTask;

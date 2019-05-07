@@ -1,18 +1,22 @@
 package com.thanhdc.GUI.View;
 
-import Main.EndTask;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.github.lgooddatepicker.components.TimePickerSettings.TimeArea;
-import com.thanhdc.GUI.Main.YourTask;
+import com.thanhdc.GUI.Main.EndTask;
+import com.thanhdc.GUI.Main.StartTask;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -204,7 +208,7 @@ public class BOTView extends JFrame {
 
                 // timer.schedule(Task, Time to start, Interval Period);
                 Timer timerToStart = new Timer();
-                timerToStart.schedule(new YourTask(), calStart.getTime(),
+                timerToStart.schedule(new StartTask(), calStart.getTime(),
                         TimeUnit.MILLISECONDS
                                 .convert(intPeriod, TimeUnit.SECONDS)); // period:
                 // 1
@@ -217,26 +221,26 @@ public class BOTView extends JFrame {
                 int timePickerEndtMin = timePickerStart.getMinutes();
                 int timePickerEndSecond = timePickerStart.getSeconds();
                 // format DateEnd to Calendar type
-				Date DateNoZoneEnd = convertToDateViaSqlDate(DateEnd);
-				calEnd = Calendar.getInstance();
-				calEnd.setTime(DateNoZoneStart);
+                Date DateNoZoneEnd = convertToDateViaSqlDate(DateEnd);
+                calEnd = Calendar.getInstance();
+                calEnd.setTime(DateNoZoneStart);
 
-				calEnd.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
-																	// time
-				calEnd.set(Calendar.MINUTE, timePickerEndtMin);
-				calEnd.set(Calendar.SECOND, timePickerEndSecond);
+                calEnd.set(Calendar.HOUR_OF_DAY, timePickerEndHour);// import
+                // time
+                calEnd.set(Calendar.MINUTE, timePickerEndtMin);
+                calEnd.set(Calendar.SECOND, timePickerEndSecond);
 
-				Timer timerToEnd = new Timer();
-				timerToEnd.schedule(new EndTask(), calEnd.getTime(),
-						TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
+                Timer timerToEnd = new Timer();
+                timerToEnd.schedule(new EndTask(), calEnd.getTime(),
+                        TimeUnit.MILLISECONDS.convert(0, TimeUnit.HOURS));
 
-				String mapSaveFolder = saveFolder.getText();
+                String mapSaveFolder = saveFolder.getText();
 
-				System.out.println(timePickerStartHour);
-				System.out.println(timePickerStartMin);
-				System.out.println(timePickerStartSecond);
-				System.out.println(intPeriod);
-				System.out.println(mapSaveFolder);
+                System.out.println(timePickerStartHour);
+                System.out.println(timePickerStartMin);
+                System.out.println(timePickerStartSecond);
+                System.out.println(intPeriod);
+                System.out.println(mapSaveFolder);
 
             }
         });
@@ -512,6 +516,9 @@ public class BOTView extends JFrame {
 
     protected void saveToFile() {
         Preferences pref = Preferences.userRoot();
+        WebDriver driver = null;
+        System.setProperty("webdriver.chrome.driver", "/home/thanhdinh/IdeaProjects/JavaSwing/BOT-AML/chromedriver");
+        driver = new ChromeDriver();
 
         // Retrieve the selected path or use
         // an empty string if no path has
@@ -532,6 +539,9 @@ public class BOTView extends JFrame {
 
             // Save the selected path
             pref.put("DEFAULT_PATH", f.getAbsolutePath());
+            // define the download folder
+            Path download_folder = Paths.get(f.getPath());
+
         }
     }
 

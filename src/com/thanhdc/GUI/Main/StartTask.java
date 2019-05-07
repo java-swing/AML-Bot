@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.TimerTask;
 
 @SuppressWarnings("unused")
-public class YourTask extends TimerTask {
+public class StartTask extends TimerTask {
     @Override
     public void run() {
         String url = "http://10.1.14.221:7777/Report/login.jsp";
